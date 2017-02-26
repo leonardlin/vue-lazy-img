@@ -36,7 +36,9 @@ var loadImagesIfNeed = function (elementsObj) {
             continue;
         }
 
-        var height = element.offsetHeight;
+//        var height = element.offsetHeight;
+// instead of waiting for the element to come in full view, 
+		var height = -100;
         var position = element.getBoundingClientRect();
         // whether the element is in the screen
         if (position.top > 0 && position.top + height < windowHeight) {
@@ -51,16 +53,19 @@ var loadImagesIfNeed = function (elementsObj) {
  * @param  {String} source   the source of image
  */
 var initScrollEvent = function (elementsObj) {
-    var timeout = -1;
+    var timeout = false;
     window.addEventListener('scroll', () => {
         // function debouncing
-        if (timeout !== -1) {
-            clearTimeout(timeout);
+        if (timeout) {
+            return;
         }
+        timeout = true;
         // get element in the screen and load images
-        timeout = setTimeout(() => {
-            loadImagesIfNeed(elementsObj);
-        }, 100);
+        loadImagesIfNeed(elementsObj);
+
+        setTimeout(() => {
+            timeout = false;
+        }, 150);
     });
     // load image oninit
     loadImagesIfNeed(elementsObj);
